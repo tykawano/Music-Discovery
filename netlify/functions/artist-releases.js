@@ -55,7 +55,6 @@ exports.handler = async (event, context) => {
     }
 
     const releasesData = await getArtistReleases(mbid);
-    console.log('Raw releases response from MusicBrainz:', JSON.stringify(releasesData, null, 2));
     
     return {
       statusCode: 200,
