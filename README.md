@@ -12,37 +12,30 @@ A web application for discovering new music artists using the MusicBrainz API.
 ## Tech Stack
 
 - **Frontend**: HTML, CSS, JavaScript (vanilla)
-- **Backend**: 
-  - Production: Netlify Functions (serverless)
-  - Local Development: Express.js (optional)
+- **Backend**: Netlify Functions (serverless) - used for both local development and production
 - **API**: MusicBrainz API
-- **Testing**: Jest, Supertest
+- **Testing**: Jest
 
 ## Quick Start
 
-### Local Development (Express Server)
+### Local Development
 
-```bash
-# Install dependencies
-npm install
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-# Start development server
-npm run dev
-```
+2. **Start development server**:
+   ```bash
+   npm run dev
+   ```
 
-The app will be available at `http://localhost:3000`
+   This uses Netlify CLI to run your functions locally. The app will be available at `http://localhost:8888`
 
-### Local Development (Netlify Functions)
-
-```bash
-# Install Netlify CLI globally
-npm install -g netlify-cli
-
-# Start Netlify dev server
-npm run dev:netlify
-```
-
-The app will be available at `http://localhost:8888`
+   **Note**: If you don't have Netlify CLI installed globally, install it first:
+   ```bash
+   npm install -g netlify-cli
+   ```
 
 ### Running Tests
 
@@ -69,13 +62,10 @@ This project is configured for deployment on Netlify. See [NETLIFY_DEPLOYMENT.md
 │   ├── css/
 │   └── js/
 ├── src/                    # Backend source code
-│   ├── server.js          # Express server (local dev)
-│   ├── routes/            # Express routes (local dev)
-│   ├── services/          # Shared business logic
-│   ├── config/            # Configuration
-│   └── middleware/        # Express middleware
+│   ├── services/          # Shared business logic (used by Netlify Functions)
+│   └── config/            # Configuration
 ├── netlify/
-│   └── functions/         # Netlify Functions (production)
+│   └── functions/         # Netlify Functions (used for local dev and production)
 ├── tests/                 # Test files
 └── netlify.toml          # Netlify configuration
 ```
@@ -90,9 +80,7 @@ This project is configured for deployment on Netlify. See [NETLIFY_DEPLOYMENT.md
 
 ## Scripts
 
-- `npm start` - Start Express server
-- `npm run dev` - Start Express server with auto-reload
-- `npm run dev:netlify` - Start Netlify dev server
+- `npm run dev` - Start local development server with Netlify Functions (uses `netlify dev`)
 - `npm test` - Run tests
 
 ## License

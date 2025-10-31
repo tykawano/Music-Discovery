@@ -1,12 +1,4 @@
-// Use relative URL for Netlify deployment, fallback to localhost for development
-const API_BASE_URL = (() => {
-  // Check if we're in production (deployed on Netlify)
-  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    return '/api';
-  }
-  // Local development - use localhost
-  return 'http://localhost:3000/api';
-})();
+const API_BASE_URL = '/api';
 const searchForm = document.getElementById('searchForm');
 const artistNameInput = document.getElementById('artistName');
 const genreSelect = document.getElementById('genre');

@@ -1,13 +1,10 @@
 const { findSimilarArtists } = require('../../src/services/musicbrainzService');
 
-// Helper to extract mbid from various event properties
 function extractMbid(event) {
-  // Try query parameters first
   if (event.queryStringParameters?.mbid) {
     return event.queryStringParameters.mbid;
   }
   
-  // Try path extraction from multiple sources
   const pathsToCheck = [
     event.path,
     event.rawPath,
@@ -16,10 +13,8 @@ function extractMbid(event) {
   ].filter(Boolean);
   
   for (const path of pathsToCheck) {
-    // Try /api/artist/{mbid}/similar pattern
     let match = path.match(/\/api\/artist\/([^\/\?]+)/);
     if (!match) {
-      // Try /artist/{mbid} pattern (if path doesn't have /api)
       match = path.match(/\/artist\/([^\/\?]+)/);
     }
     if (match) {

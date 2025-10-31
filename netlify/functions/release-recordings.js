@@ -1,13 +1,10 @@
 const { getReleaseRecordings } = require('../../src/services/musicbrainzService');
 
-// Helper to extract releaseId from various event properties
 function extractReleaseId(event) {
-  // Try query parameters first
   if (event.queryStringParameters?.releaseId) {
     return event.queryStringParameters.releaseId;
   }
   
-  // Try path extraction from multiple sources
   const pathsToCheck = [
     event.path,
     event.rawPath,
@@ -16,10 +13,8 @@ function extractReleaseId(event) {
   ].filter(Boolean);
   
   for (const path of pathsToCheck) {
-    // Try /api/release/{releaseId}/recordings pattern
     let match = path.match(/\/api\/release\/([^\/\?]+)/);
     if (!match) {
-      // Try /release/{releaseId} pattern (if path doesn't have /api)
       match = path.match(/\/release\/([^\/\?]+)/);
     }
     if (match) {

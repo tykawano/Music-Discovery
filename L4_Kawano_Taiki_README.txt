@@ -1,16 +1,19 @@
-# Activity / Lab / Assignment / Project Title
+# Music Discovery Application
 
-**[Optional]** If what is being submitted is an individual Lab or Assignment. Otherwise, include a brief one paragraph description about the project.
+**CSCI 3172 - Lab 4 Instructions**  
+**Fall 2025**
+
+## Description
+
+This Music Discovery Application is a web-based platform that enables users to discover new music artists and explore their discographies. Users can search for artists by name, find similar artists within a selected genre, browse artist albums, and view detailed track listings. The application features a modern, responsive user interface with smooth animations and provides real-time feedback during API calls. The backend is built using serverless Netlify Functions, ensuring scalability and efficient resource usage, while the frontend is a single-page application built with vanilla JavaScript, HTML, and CSS.
 
 * *Date Created*: 31 10 2025
 * *Last Modification Date*: 31 10 2025
 * *Lab URL*: https://git.cs.dal.ca/tkawano/lab1
-* *WEB URL*: 
+* *WEB URL*: https://music-discover.netlify.app/
 
 
 ## Authors
-
-If what is being submitted is an individual Lab or Assignment, you may simply include your name and email address. Otherwise list the members of your group.
 
 * [Taiki](tk711146@dal.ca)
 
@@ -20,15 +23,195 @@ If what is being submitted is an individual Lab or Assignment, you may simply in
 <!--- Provide a list of the frameworks used to build this application, your list should include the name of the framework used, the url where the framework is available for download and what the framework was used for, see the example below --->
 
 * [Node.js](https://nodejs.org/) - The JavaScript runtime environment used to run the server-side application
-* [Express.js](https://expressjs.com/) - The web framework used for building the RESTful API server
+* [Netlify Functions](https://www.netlify.com/products/functions/) - Serverless functions used for the backend API (used for both local development and production)
+* [Netlify CLI](https://docs.netlify.com/cli/get-started/) - Command-line interface for local development with Netlify Functions
 * [Bootstrap 5](https://getbootstrap.com/) - The CSS framework used for responsive UI design and styling
 * [Axios](https://axios-http.com/) - HTTP client library used for making requests to the MusicBrainz API
-* [CORS](https://github.com/expressjs/cors) - Middleware used to enable Cross-Origin Resource Sharing
 * [Jest](https://jestjs.io/) - JavaScript testing framework used for unit testing
-* [Supertest](https://github.com/visionmedia/supertest) - HTTP assertion library used for testing API endpoints
-* [Nodemon](https://nodemon.io/) - Development tool used for automatically restarting the server during development
 * [MusicBrainz API](https://musicbrainz.org/doc/MusicBrainz_API) - External API used to retrieve artist, album, and track information
 
+## APIs and Technologies Used
+
+### External APIs
+- **MusicBrainz API** - Provides comprehensive music metadata including artist information, album releases, track listings, and genre classifications. The API requires proper User-Agent headers and respects rate limiting of 1 request per second.
+
+### Core Technologies
+- **Node.js** - JavaScript runtime for serverless function execution
+- **Netlify Functions** - Serverless compute platform for backend API endpoints
+- **JavaScript (ES6+)** - Frontend application logic and async API handling
+- **HTML5/CSS3** - Modern web markup and styling with CSS custom properties
+- **Bootstrap 5** - Responsive CSS framework for layout and components
+
+### Development Tools
+- **Jest** - Unit testing framework
+- **Netlify CLI** - Local development environment for Netlify Functions
+- **Axios** - HTTP client for making API requests to MusicBrainz
+
+
+## Issues and Limitations Encountered
+
+During development, several challenges were encountered and addressed:
+
+### 1. MusicBrainz API Rate Limiting
+**Issue**: The MusicBrainz API enforces a strict rate limit of 1 request per second, which initially caused API errors when multiple requests were made in quick succession.
+
+**Solution**: Implemented a rate-limiting mechanism in the service layer (`src/services/musicbrainzService.js`) that tracks the time between requests and automatically delays subsequent requests to ensure compliance with the API's rate limit. This ensures all API calls are made at least 1 second apart.
+
+### 2. Path Parameter Extraction in Netlify Functions
+**Issue**: During deployment to Netlify, API endpoints with path parameters (e.g., `/api/artist/:mbid`) were not correctly extracting parameters from the request, resulting in "Artist MBID is required" errors.
+
+**Solution**: Enhanced the Netlify Functions to extract path parameters from multiple event properties (`event.path`, `event.rawPath`, headers) as a fallback mechanism. This ensures parameters are correctly parsed regardless of how Netlify routes the requests through redirects.
+
+### 3. CORS Configuration
+**Issue**: Cross-origin requests from the frontend to the API endpoints required proper CORS headers to function correctly.
+
+**Solution**: Added CORS headers to all Netlify Functions, allowing cross-origin requests from any origin. Each function includes appropriate Access-Control-Allow-* headers in its response.
+
+### 4. Development Environment Consistency
+**Issue**: Initially, the application used Express.js for local development and Netlify Functions for production, creating a mismatch between development and production environments.
+
+**Solution**: Migrated entirely to Netlify Functions for both local development and production, using Netlify CLI's `netlify dev` command. This ensures the local environment exactly matches production, reducing deployment issues.
+
+### 5. Node.js Version Requirements
+**Issue**: Netlify Functions require Node.js 20+, but the development environment was using Node.js 18.
+
+**Solution**: Updated `package.json` and `netlify.toml` to specify Node.js 20+ as a requirement. The application now uses `npx` to ensure the correct Netlify CLI version is used locally.
+
+### Limitations
+- **API Rate Limiting**: Due to MusicBrainz API's rate limit, search operations may take longer when processing multiple requests sequentially.
+- **Data Completeness**: Some artists may have incomplete metadata in the MusicBrainz database, resulting in missing album or track information.
+- **Similar Artist Algorithm**: The similar artist functionality uses genre-based search rather than MusicBrainz's built-in similarity algorithms, as those are not publicly available through the API.
+
+
+## Deployment
+
+This project is deployed on [Netlify](https://www.netlify.com/) as a serverless application using Netlify Functions for the backend API.
+
+### Project Structure
+
+- **Frontend**: Static files in `public/` directory
+- **Backend**: Netlify Functions in `netlify/functions/` directory (used for both local development and production)
+- **Shared Services**: `src/services/` contains shared business logic used by Netlify Functions
+- **Configuration**: `netlify.toml` contains build and redirect settings
+
+### Note
+
+This project uses **only Netlify Functions** for the backend. The same functions run locally (via `netlify dev`) and in production, ensuring your local environment matches production exactly.
+
+### Configuration
+
+The `netlify.toml` file configures:
+- **Publish directory**: `public` (your frontend)
+- **Functions directory**: `netlify/functions` (your serverless API)
+- **Node.js version**: 20
+- **Redirects**: All `/api/*` requests are routed to Netlify Functions
+- **SPA routing**: All other requests fallback to `index.html`
+
+### API Endpoints
+
+API endpoints will be available at:
+- `https://your-site.netlify.app/api/search-artist`
+- `https://your-site.netlify.app/api/artist/:mbid`
+- `https://your-site.netlify.app/api/artist/:mbid/releases`
+- `https://your-site.netlify.app/api/artist/:mbid/similar`
+- `https://your-site.netlify.app/api/release/:releaseId/recordings`
+
+### Local Development
+
+To run the app locally with Netlify Functions:
+
+1. **Install Netlify CLI** (if not installed):
+   ```bash
+   npm install -g netlify-cli
+   ```
+
+2. **Run development server**:
+   ```bash
+   npm run dev
+   # or
+   npx netlify dev
+   ```
+
+   This will:
+   - Serve your static files from `public/`
+   - Run your Netlify Functions locally
+   - Make `/api/*` endpoints available at `http://localhost:8888/api/*`
+   - Match the production environment exactly
+
+### Functions
+
+Each Netlify Function corresponds to an API endpoint:
+- `netlify/functions/search-artist.js` - Search for artists
+- `netlify/functions/artist.js` - Get artist details
+- `netlify/functions/artist-releases.js` - Get artist releases
+- `netlify/functions/artist-similar.js` - Find similar artists
+- `netlify/functions/release-recordings.js` - Get release recordings
+
+All functions include:
+- CORS headers for cross-origin requests
+- Error handling
+- Proper HTTP status codes
+
+### Environment Variables
+
+Currently, no environment variables are required. The MusicBrainz API configuration is in `src/config/constants.js`.
+
+If you need to add environment variables:
+1. Go to Netlify Dashboard → Site Settings → Environment Variables
+2. Add your variables
+3. Access them in functions via `process.env.VARIABLE_NAME`
+
+### Troubleshooting
+
+#### Functions not working
+- Check Netlify Function logs in the dashboard
+- Verify `netlify.toml` redirects are correct
+- Ensure Node.js version is 20+ (specified in `netlify.toml`)
+
+#### CORS errors
+- All functions include CORS headers
+- If issues persist, check browser console for specific errors
+
+#### Local development issues
+- Make sure `netlify dev` is running (`npm run dev`)
+- Ensure Netlify CLI is installed: `npm install -g netlify-cli`
+- Check that Node.js version is 20+ (required by Netlify Functions)
+
+
+## Testing
+
+The application was tested using Jest, a JavaScript testing framework. The testing approach focused on unit testing core functionality and ensuring proper error handling throughout the application.
+
+### Components Tested
+
+The following components were identified as critical and required testing:
+
+1. **Input Validation Functions** - Validated that user input (artist name and genre) is properly validated before API calls, including edge cases such as empty strings, whitespace-only input, and missing required fields.
+
+2. **Data Processing Functions** - Tested utility functions including:
+   - Duration formatting (converting milliseconds to MM:SS format)
+   - Duplicate removal logic for album releases
+   - Empty data structure handling
+   - Artist data structure parsing
+
+3. **API Error Handling** - Verified that the application properly handles various API error scenarios:
+   - Network errors (connection failures)
+   - HTTP error responses (404, 500, etc.)
+   - Successful API responses with proper data extraction
+
+### Isolation Strategy
+
+To properly isolate components for testing:
+
+- **Mocking External Dependencies**: The `global.fetch` API was mocked using Jest's `jest.fn()` to prevent actual HTTP requests during testing. This allowed testing of error handling and response processing without making real API calls to the MusicBrainz service.
+
+- **Standalone Function Testing**: Utility functions (input validation, duration formatting, data processing) were tested in isolation by extracting testable logic and testing with various input scenarios including edge cases.
+
+- **Mock Setup**: A test setup file (`tests/setup.js`) was created to configure the global fetch mock, ensuring consistent test environment initialization across all test files.
+
+### Test Results
+
+All tested components worked as expected after proper isolation. The mocking strategy successfully prevented external API dependencies from affecting test reliability. No significant errors were encountered during testing - the components handled both success and error scenarios correctly. The tests validate that the application gracefully handles edge cases such as empty inputs, network failures, and malformed responses, ensuring a robust user experience.
 
 
 ## Sources Used
