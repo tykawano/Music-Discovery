@@ -152,7 +152,9 @@ function displaySimilarArtists(artists) {
     }).join('');
 }
 function displayAlbums(releases) {
+    console.log('displayAlbums called with:', releases);
     if (!releases || releases.length === 0) {
+        console.log('No releases found. Releases:', releases);
         albumsContainer.innerHTML = '<div style="grid-column: 1 / -1;"><p style="text-align: center; color: var(--text-secondary);">No albums found for this artist.</p></div>';
         return;
     }
@@ -240,7 +242,29 @@ async function selectArtist(mbid, name) {
         albumsContainer.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-secondary);">Loading albums...</div>';
         artistDetailsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         const releasesData = await getArtistAlbums(mbid);
-        const releases = releasesData.releases || [];
+        console.log('Releases response:', releasesData);
+        let releases = [];
+        
+        if (Array.isArray(releasesData)) {
+            releases = releasesData;
+        } else if (releasesData && Array.isArray(releasesData.releases)) {
+            releases = releasesData.releases;
+        } else if (releasesData && Array.isArray(releasesData['release-list'])) {
+            releases = releasesData['release-list'];
+        } else if (releasesData && typeof releasesData === 'object') {
+            for (const key in releasesData) {
+                if (Array.isArray(releasesData[key]) && releasesData[key].length > 0) {
+                    const firstItem = releasesData[key][0];
+                    if (firstItem && (firstItem.id || firstItem.title || firstItem.date)) {
+                        releases = releasesData[key];
+                        break;
+                    }
+                }
+            }
+        }
+        
+        console.log('Extracted releases:', releases);
+        console.log('Releases count:', releases ? releases.length : 0);
         displayAlbums(releases);
     } catch (error) {
         showError(`Failed to load albums: ${error.message}`);

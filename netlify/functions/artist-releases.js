@@ -54,12 +54,13 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const releases = await getArtistReleases(mbid);
+    const releasesData = await getArtistReleases(mbid);
+    console.log('Raw releases response from MusicBrainz:', JSON.stringify(releasesData, null, 2));
     
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify(releases)
+      body: JSON.stringify(releasesData)
     };
   } catch (error) {
     console.error('Error fetching artist releases:', error);

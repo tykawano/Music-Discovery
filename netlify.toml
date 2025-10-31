@@ -7,16 +7,10 @@
   NODE_VERSION = "20"
 
 # Redirect all API calls to Netlify Functions
-# The functions will extract path parameters from the original request path
+# IMPORTANT: More specific patterns must come FIRST
 [[redirects]]
   from = "/api/search-artist"
   to = "/.netlify/functions/search-artist"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/artist/*"
-  to = "/.netlify/functions/artist"
   status = 200
   force = true
 
@@ -29,6 +23,12 @@
 [[redirects]]
   from = "/api/artist/*/similar"
   to = "/.netlify/functions/artist-similar"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/artist/*"
+  to = "/.netlify/functions/artist"
   status = 200
   force = true
 
