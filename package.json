@@ -6,11 +6,16 @@
   "scripts": {
     "start": "node src/server.js",
     "test": "jest",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "dev:netlify": "netlify dev"
   },
   "keywords": ["music", "discovery", "musicbrainz"],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=9.0.0"
+  },
   "dependencies": {
     "express": "^4.18.2",
     "axios": "^1.6.0",

@@ -1,0 +1,45 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+  command = "echo 'No build step required - static site with serverless functions'"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Redirect all API calls to Netlify Functions
+[[redirects]]
+  from = "/api/search-artist"
+  to = "/.netlify/functions/search-artist"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/artist/:mbid"
+  to = "/.netlify/functions/artist?mbid=:mbid"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/artist/:mbid/releases"
+  to = "/.netlify/functions/artist-releases?mbid=:mbid"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/artist/:mbid/similar"
+  to = "/.netlify/functions/artist-similar?mbid=:mbid"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/release/:releaseId/recordings"
+  to = "/.netlify/functions/release-recordings?releaseId=:releaseId"
+  status = 200
+  force = true
+
+# SPA fallback - redirect all non-file requests to index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
