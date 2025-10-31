@@ -85,7 +85,7 @@ During development, several challenges were encountered and addressed:
 
 ## Deployment
 
-This project is deployed on [Netlify](https://www.netlify.com/) as a serverless application using Netlify Functions for the backend API.
+This project is deployed on [Netlify](https://music-discover.netlify.app/) as a serverless application using Netlify Functions for the backend API.
 
 ### Project Structure
 
