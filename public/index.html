@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Discover new music artists and songs based on your preferences">
+    <title>Music Discovery App</title>
+    
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    
+    
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="main-header">
+        <nav class="navbar" role="navigation" aria-label="Main navigation">
+            <div class="container">
+                <div class="nav-brand">
+                    <span class="music-icon" aria-hidden="true">♪</span>
+                    <span class="navbar-brand-text">Music Discovery</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container main-container" role="main">
+        <section aria-labelledby="app-title" class="hero-section">
+            <div class="hero-content">
+                <h1 id="app-title" class="hero-title">Discover New Music</h1>
+                <p class="hero-subtitle">
+                    Enter an artist name and select a genre to find similar artists and explore their albums and tracks.
+                </p>
+                <div class="decorative-shapes">
+                    <div class="shape shape-1"></div>
+                    <div class="shape shape-2"></div>
+                    <div class="shape shape-3"></div>
+                </div>
+            </div>
+        </section>
+
+        <section aria-labelledby="search-form" class="search-section">
+            <div class="search-card">
+                <div class="search-card-header">
+                    <div class="search-icon-wrapper">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </div>
+                    <h2 id="search-form" class="search-title">Search for Artists</h2>
+                </div>
+                <div class="search-card-body">
+                    <form id="searchForm" role="search" aria-label="Search for music artists">
+                        <div class="form-group-custom">
+                            <label for="artistName" class="form-label-custom">
+                                <span class="label-icon">👤</span>
+                                Artist Name
+                                <span class="required-mark" aria-label="required">*</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <input 
+                                    type="text" 
+                                    class="form-input-custom" 
+                                    id="artistName" 
+                                    name="artistName" 
+                                    placeholder="Enter artist name (e.g., The Beatles)"
+                                    required
+                                    aria-required="true"
+                                    aria-describedby="artistNameHelp"
+                                >
+                            </div>
+                            <div id="artistNameHelp" class="form-help">Enter the name of an artist you like</div>
+                        </div>
+                        
+                        <div class="form-group-custom">
+                            <label for="genre" class="form-label-custom">
+                                <span class="label-icon">🎸</span>
+                                Genre
+                                <span class="required-mark" aria-label="required">*</span>
+                            </label>
+                            <div class="select-wrapper">
+                                <select 
+                                    class="form-select-custom" 
+                                    id="genre" 
+                                    name="genre" 
+                                    required
+                                    aria-required="true"
+                                    aria-describedby="genreHelp"
+                                >
+                                    <option value="">Select a genre</option>
+                                    <option value="pop">Pop</option>
+                                    <option value="rock">Rock</option>
+                                    <option value="jazz">Jazz</option>
+                                    <option value="electronic">Electronic</option>
+                                    <option value="hip-hop">Hip-Hop</option>
+                                    <option value="country">Country</option>
+                                    <option value="classical">Classical</option>
+                                    <option value="blues">Blues</option>
+                                    <option value="folk">Folk</option>
+                                    <option value="metal">Metal</option>
+                                    <option value="punk">Punk</option>
+                                    <option value="r&b">R&B</option>
+                                    <option value="reggae">Reggae</option>
+                                </select>
+                                <div class="select-arrow"></div>
+                            </div>
+                            <div id="genreHelp" class="form-help">Select your preferred genre</div>
+                        </div>
+                        
+                        <button type="submit" class="btn-search" id="searchBtn">
+                            <span class="btn-content">
+                                <span class="spinner-border spinner-border-sm d-none" id="searchSpinner" role="status" aria-hidden="true"></span>
+                                <span id="searchBtnText">Discover Music</span>
+                                <span class="btn-arrow">→</span>
+                            </span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        
+        <div id="errorMessage" class="error-message d-none" role="alert" aria-live="assertive">
+            <div class="error-content">
+                <span class="error-icon">⚠</span>
+                <span class="error-text"></span>
+            </div>
+        </div>
+
+        
+        <div id="loadingIndicator" class="loading-indicator d-none" role="status" aria-live="polite">
+            <div class="loader-wrapper">
+                <div class="music-loader">
+                    <div class="note note-1">♪</div>
+                    <div class="note note-2">♫</div>
+                    <div class="note note-3">♪</div>
+                </div>
+            </div>
+            <p class="loading-text">Discovering amazing music...</p>
+        </div>
+
+        
+        <section id="resultsSection" class="results-section d-none" aria-labelledby="results-title">
+            <div class="section-header">
+                <h2 id="results-title" class="section-title">
+                    <span class="title-icon">🎤</span>
+                    Similar Artists
+                </h2>
+                <div class="title-underline"></div>
+            </div>
+            <div id="similarArtists" role="list" aria-label="List of similar artists">
+                
+            </div>
+
+            <div id="artistDetailsSection" class="artist-details-section d-none">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span class="title-icon">💿</span>
+                        Albums
+                    </h2>
+                    <div class="title-underline"></div>
+                </div>
+                <div id="albumsContainer" class="albums-grid" role="list" aria-label="List of albums">
+                    
+                </div>
+
+                <div id="tracksSection" class="tracks-section d-none">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <span class="title-icon">🎵</span>
+                            Tracks
+                        </h2>
+                        <div class="title-underline"></div>
+                    </div>
+                    <div id="tracksContainer" class="tracks-list" role="list" aria-label="List of tracks">
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <p class="footer-text">
+                <span class="footer-icon">♫</span>
+                Music Discovery App - Powered by MusicBrainz API
+            </p>
+        </div>
+    </footer>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    
+    
+    <script src="js/app.js"></script>
+</body>
+</html>
+
